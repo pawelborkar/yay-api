@@ -1,1 +1,1 @@
-web: uvicorn pyshortener.main:app --proxy-headers --host=0.0.0.0 --port=${PORT}
+web: uvicorn pyshortener_app.main:app --proxy-headers --host=0.0.0.0 --port=${PORT}

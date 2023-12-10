@@ -15,7 +15,7 @@ sqlalchemy = "^2.0.23"
 pydantic-settings = "^2.1.0"
 
 [tool.poetry.scripts]
-start = "uvicorn pyshortener.main:app"
+start = "uvicorn pyshortener_app.main:app"
 
 [build-system]
 requires = ["poetry-core"]
