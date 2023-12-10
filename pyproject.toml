@@ -1,18 +1,18 @@
 [tool.poetry]
 name = "pyshortener"
 version = "0.1.0"
-description = "URL Shortener written in python and fastapi."
+description = "URL shortener written in python."
 authors = ["Pawel Borkar <pawel@duck.com>"]
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = "^0.104.1"
-uvicorn = "^0.24.0.post1"
-sqlalchemy = "^2.0.23"
-python-dotenv = "^1.0.0"
+fastapi = { extras = ["all"], version = "^0.104.1" }
 validators = "^0.22.0"
-pydantic = "^2.5.2"
+python-dotenv = "^1.0.0"
+sqlalchemy = "^2.0.23"
+pydantic-settings = "^2.1.0"
 
 
 [build-system]
