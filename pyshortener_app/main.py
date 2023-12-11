@@ -17,18 +17,19 @@ from .config import get_settings
 from .database import SessionLocal, engine
 from .crud import create_db_url, deactivate_url_by_secret_key, get_db_url_by_key, get_db_url_by_secret_key, update_visitor_count
 
-app = FastAPI(title="YAY", description="YAY: URL Shortener, Visit: https://yay.pawel.in", url='https://yay.pawel.in')
+app = FastAPI(title="YAY", description="YAY: URL Shortener, Visit: https://yay.pawel.in",
+              url='https://yay.pawel.in')
 
 origins = get_settings().origins
 print(get_settings().env_name)
 
 app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"]
-        )
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 tags_metadata = [
     {"name": "user", "description": "Operations related to user"},
@@ -38,26 +39,32 @@ tags_metadata = [
 
 models.Base.metadata.create_all(bind=engine)
 
+
 async def ping_url(url):
     async with httpx.AsyncClient() as client:
         try:
             response = await client.get(url)
             response.raise_for_status()
-            print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
+            print(f"Ping successful at {time.ctime()} to URL: {
+                  get_settings().base_url}")
         except httpx.RequestError as e:
             print(f"Error: {e}")
 
+
 async def background_ping():
-    url_to_ping = get_settings().base_url  # Replace with your actual URL
+    url_to_ping = get_settings().base_url
 
     while True:
         await ping_url(url_to_ping)
-        await asyncio.sleep(14 * 60 + 50)  # Sleep for 14 minutes and 50 seconds
+        # Sleep for 14 minutes and 50 seconds
+        await asyncio.sleep(14 * 60 + 50)
+
 
 @app.on_event("startup")
 async def startup_event():
     # Start the background ping coroutine when the server starts
     asyncio.create_task(background_ping())
+
 
 def get_db():
     db = SessionLocal()
@@ -69,7 +76,8 @@ def get_db():
 
 def get_admin_info(db_url: models.URL) -> schemas.URLInformation:
     base_url = URL(get_settings().base_url)
-    admin_endpoint = app.url_path_for("administration information", secret_key=db_url.secret_key)
+    admin_endpoint = app.url_path_for(
+        "administration information", secret_key=db_url.secret_key)
     db_url.url = str(base_url.replace(path=db_url.key))
     db_url.admin_url = str(base_url.replace(path=admin_endpoint))
 
@@ -92,10 +100,10 @@ def home():
 
 @app.get("/{url_key}", tags=["User"])
 def forward_to_target_url(
-        url_key: str,
-        request: Request,
-        db: Session = Depends(get_db)
-    ):
+    url_key: str,
+    request: Request,
+    db: Session = Depends(get_db)
+):
     if db_url := get_db_url_by_key(db=db, url_key=url_key):
         update_visitor_count(db=db, db_url=db_url)
         return RedirectResponse(db_url.target_url)
@@ -123,7 +131,8 @@ def get_url_info(secret_key: str, request: Request, db: Session = Depends(get_db
 @app.delete("/admin/{secret_key}",  tags=["Admin"])
 def deactivate_url(secret_key: str, request: Request, db: Session = Depends(get_db)):
     if db_url := deactivate_url_by_secret_key(db=db, secret_key=secret_key):
-        message = f"Successfully deleted shortened URL for '{db_url.target_url}'"
+        message = f"Successfully deleted shortened URL for '{
+            db_url.target_url}'"
         return {"detail": message}
     else:
         raise_not_found(request)
