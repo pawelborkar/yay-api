@@ -46,8 +46,12 @@ async def ping_url(url):
             response = await client.get(url)
             response.raise_for_status()
             print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
-        except httpx.Request:
-            print(f"Error: {e}")
+
+        except httpx.HTTPStatusError as exc:
+            print(f"HTTP error: {exc}")
+            
+        except Exception as exc:
+            print(f"An unexpected error occurred: {exc}")
 
 
 async def background_ping():
