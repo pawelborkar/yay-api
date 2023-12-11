@@ -46,7 +46,7 @@ async def ping_url(url):
             response = await client.get(url)
             response.raise_for_status()
             print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
-        except httpx.RequestError as e:
+        except httpx.Request:
             print(f"Error: {e}")
 
 
@@ -94,7 +94,7 @@ def raise_bad_request(message: str):
 
 @app.get("/", tags=["User"])
 def home():
-    return "Welcome to PyShortner."
+    return RedirectResponse(get_settings().base_url + '/docs')
 
 
 @app.get("/{url_key}", tags=["User"])

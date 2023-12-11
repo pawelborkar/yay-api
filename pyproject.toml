@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "pyshortener"
-version = "0.1.0"
+name = "yay-api"
+version = "1.0.0"
 description = "URL shortener written in python."
 authors = ["Pawel Borkar <pawel@duck.com>"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11.5"
+python = "^3.12"
 fastapi = { extras = ["all"], version = "^0.104.1" }
 validators = "^0.22.0"
 python-dotenv = "^1.0.0"
@@ -15,7 +15,7 @@ sqlalchemy = "^2.0.23"
 pydantic-settings = "^2.1.0"
 
 [tool.poetry.scripts]
-start = "uvicorn pyshortener_app.main:app"
+start = "uvicorn app.main:app"
 
 [build-system]
 requires = ["poetry-core"]
