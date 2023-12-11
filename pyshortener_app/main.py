@@ -1,4 +1,8 @@
+import time
+import httpx
 import validators
+
+import asyncio
 
 from starlette.datastructures import URL
 from sqlalchemy.orm import Session
@@ -15,7 +19,8 @@ from .crud import create_db_url, deactivate_url_by_secret_key, get_db_url_by_key
 
 app = FastAPI(title="YAY", description="YAY: URL Shortener, Visit: https://yay.pawel.in", url='https://yay.pawel.in')
 
-origins = ["http://localhost:1420", "http://localhost:3000", "https://yay.pawel.in", "https://https://yay-nhv8.onrender.com"]
+origins = get_settings().origins
+print(get_settings().env_name)
 
 app.add_middleware(
         CORSMiddleware,
@@ -33,6 +38,26 @@ tags_metadata = [
 
 models.Base.metadata.create_all(bind=engine)
 
+async def ping_url(url):
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url)
+            response.raise_for_status()
+            print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
+        except httpx.RequestError as e:
+            print(f"Error: {e}")
+
+async def background_ping():
+    url_to_ping = get_settings().base_url  # Replace with your actual URL
+
+    while True:
+        await ping_url(url_to_ping)
+        await asyncio.sleep(14 * 60 + 50)  # Sleep for 14 minutes and 50 seconds
+
+@app.on_event("startup")
+async def startup_event():
+    # Start the background ping coroutine when the server starts
+    asyncio.create_task(background_ping())
 
 def get_db():
     db = SessionLocal()
