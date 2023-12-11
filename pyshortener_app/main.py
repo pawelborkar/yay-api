@@ -45,8 +45,7 @@ async def ping_url(url):
         try:
             response = await client.get(url)
             response.raise_for_status()
-            print(f"Ping successful at {time.ctime()} to URL: {
-                  get_settings().base_url}")
+            print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
         except httpx.RequestError as e:
             print(f"Error: {e}")
 
@@ -131,8 +130,7 @@ def get_url_info(secret_key: str, request: Request, db: Session = Depends(get_db
 @app.delete("/admin/{secret_key}",  tags=["Admin"])
 def deactivate_url(secret_key: str, request: Request, db: Session = Depends(get_db)):
     if db_url := deactivate_url_by_secret_key(db=db, secret_key=secret_key):
-        message = f"Successfully deleted shortened URL for '{
-            db_url.target_url}'"
+        message = f"Successfully deleted shortened URL for '{db_url.target_url}'"
         return {"detail": message}
     else:
         raise_not_found(request)
