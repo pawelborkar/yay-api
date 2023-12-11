@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11.6"
 fastapi = { extras = ["all"], version = "^0.104.1" }
 validators = "^0.22.0"
 python-dotenv = "^1.0.0"
