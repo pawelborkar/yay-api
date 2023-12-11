@@ -15,7 +15,7 @@ from .crud import create_db_url, deactivate_url_by_secret_key, get_db_url_by_key
 
 app = FastAPI(title="YAY", description="YAY: URL Shortener, Visit: https://yay.pawel.in", url='https://yay.pawel.in')
 
-origins = ["http://localhost:1420", "http://localhost:3000", "http://localhost:5000"]
+origins = ["http://localhost:1420", "http://localhost:3000", "https://yay.pawel.in", "https://https://yay-nhv8.onrender.com"]
 
 app.add_middleware(
         CORSMiddleware,
