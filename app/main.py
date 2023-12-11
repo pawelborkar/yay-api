@@ -49,13 +49,13 @@ async def ping_url(url):
 
         except httpx.HTTPStatusError as exc:
             print(f"HTTP error: {exc}")
-            
+
         except Exception as exc:
             print(f"An unexpected error occurred: {exc}")
 
 
 async def background_ping():
-    url_to_ping = get_settings().base_url
+    url_to_ping = f"{get_settings().base_url}/docs"
 
     while True:
         await ping_url(url_to_ping)
