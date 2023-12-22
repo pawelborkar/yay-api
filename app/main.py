@@ -1,8 +1,4 @@
-import time
-import httpx
 import validators
-
-import asyncio
 
 from starlette.datastructures import URL
 from sqlalchemy.orm import Session
@@ -38,35 +34,6 @@ tags_metadata = [
 
 
 models.Base.metadata.create_all(bind=engine)
-
-
-async def ping_url(url):
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(url)
-            response.raise_for_status()
-            print(f"Ping successful at {time.ctime()} to URL: {get_settings().base_url}")
-
-        except httpx.HTTPStatusError as exc:
-            print(f"HTTP error: {exc}")
-
-        except Exception as exc:
-            print(f"An unexpected error occurred: {exc}")
-
-
-async def background_ping():
-    url_to_ping = f"{get_settings().base_url}/docs"
-
-    while True:
-        await ping_url(url_to_ping)
-        # Sleep for 14 minutes and 50 seconds
-        await asyncio.sleep(14 * 60 + 50)
-
-
-@app.on_event("startup")
-async def startup_event():
-    # Start the background ping coroutine when the server starts
-    asyncio.create_task(background_ping())
 
 
 def get_db():
